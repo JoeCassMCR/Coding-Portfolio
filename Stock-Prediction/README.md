@@ -32,12 +32,19 @@ Visual comparisons in `assets/`.
 
 #### Single Feature Graphs
 
-![Train and Loss Validation](https://github.com/user-attachments/assets/2d42cb8f-abe3-453e-8890-534ed89a3877)
-![Predictions](https://github.com/user-attachments/assets/bc4830df-090b-40bd-9be6-30768bcf52f2)
+#####Train and Validation Graph
+![Train and Validation Graph](https://github.com/user-attachments/assets/d83ea1b2-4029-4188-b37a-4a5939305fcf)
+
+##### Predictions
+![Predictions](https://github.com/user-attachments/assets/528b3e00-8761-4d37-b8bc-8b32a2d5a602)
 
 #### Multiple Feature Graphs
-![Train and Loss Validation](https://github.com/user-attachments/assets/c3d97404-c37d-42c8-89a7-ea7f04fad426)
-![Predictions](https://github.com/user-attachments/assets/98f1c1f1-e9ed-4f35-8322-4fe3af6119ba)
+
+#####Train and Validation Graph
+![Train and Loss Validation](https://github.com/user-attachments/assets/3d1f83e2-b054-4185-a392-cece4472d116)
+
+##### Predictions
+![Predictions](https://github.com/user-attachments/assets/0101f18e-325b-4d69-9bac-867570f651d9)
 
 
 ## How to Run
