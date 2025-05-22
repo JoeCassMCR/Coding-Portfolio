@@ -25,7 +25,7 @@ This project classifies political tweet sentiment during the 2020 US Presidentia
 | BERTweet     | *0.1718068255204697*   | *0.00*  |
 | VADER        | *0.2446533754716227*   | *0.05564685113045962*  |
 
-See visual comparisons in [`assets/`](./assets/)
+See visual comparisons in [`Assets/`](./Assets/)
 
 ## Highlights
 
