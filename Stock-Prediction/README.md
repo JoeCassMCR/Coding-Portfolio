@@ -28,6 +28,17 @@ This project forecasts Apple's (AAPL) stock price using GRU and LSTM neural netw
 | LSTM (Multi) | *0.XX*  | *0.XX*   |
 
 Visual comparisons in `assets/`.
+### Graphs
+
+#### Single Feature Graphs
+
+![Train and Loss Validation](https://github.com/user-attachments/assets/2d42cb8f-abe3-453e-8890-534ed89a3877)
+![Predictions](https://github.com/user-attachments/assets/bc4830df-090b-40bd-9be6-30768bcf52f2)
+
+#### Multiple Feature Graphs
+![Train and Loss Validation](https://github.com/user-attachments/assets/c3d97404-c37d-42c8-89a7-ea7f04fad426)
+![Predictions](https://github.com/user-attachments/assets/98f1c1f1-e9ed-4f35-8322-4fe3af6119ba)
+
 
 ## How to Run
 
