@@ -1,0 +1,8 @@
+datasets
+matplotlib
+nltk
+numpy
+pandas
+scikit-learn
+tensorflow
+transformers
