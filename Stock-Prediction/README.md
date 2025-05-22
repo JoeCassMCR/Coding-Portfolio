@@ -20,12 +20,12 @@ This project forecasts Apple's (AAPL) stock price using GRU and LSTM neural netw
 
 ## Results
 
-| Model        | MSE     | R² Score |
+| Model        | MAPE     | R² Score |
 |--------------|---------|----------|
-| GRU (Single) | *16.81*  | *0.97*   |
-| LSTM (Single)| *26.95*  | *0.96*   |
-| GRU (Multi)  | *71.71*  | *0.89*   |
-| LSTM (Multi) | *95.93*  | *0.85*   |
+| GRU (Single) | *0.02*  | *0.95*   |
+| LSTM (Single)| *0.02*  | *0.95*   |
+| GRU (Multi)  | *0.0139*  | *0.99793*   |
+| LSTM (Multi) | *0.0156*  | *0.9739*   |
 
 Visual comparisons in `assets/`.
 ### Graphs
