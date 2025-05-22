@@ -42,7 +42,7 @@ python sentiment_analysis.py
 ```
 ## Report
 
-You can read the full research write-up in [Sentiment Analysis Report](./Sentiment%20Analysis/Sentiment%20Analysis.pdf)
+You can read the full research write-up in [Sentiment Analysis Report](.Sentiment%20Analysis.pdf)
 
 
 
