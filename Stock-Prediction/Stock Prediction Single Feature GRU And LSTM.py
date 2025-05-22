@@ -1,12 +1,15 @@
 import yfinance as yf
 import numpy as np
 import matplotlib.pyplot as plt
-
+import os
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_absolute_percentage_error, r2_score
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import GRU, LSTM, Dense, Dropout
 
+base_directory = os.path.abspath(".")  
+assets_path = os.path.join(base_directory, "Assets")
+os.makedirs(assets_path, exist_ok=True)
 
 # Downloading the data
 ticker = "aapl"
@@ -61,9 +64,9 @@ y_pred_gru = GRUModel.predict(X_test)
 y_pred_rescaled_gru = scaler.inverse_transform(y_pred_gru)
 y_test_rescaled      = scaler.inverse_transform(y_test.reshape(-1,1))
 
-GRUmse = mean_squared_error(y_test_rescaled, y_pred_rescaled_gru)
+GRUmape = mean_absolute_percentage_error(y_test_rescaled, y_pred_rescaled_gru)
 GRUr2  = r2_score(y_test_rescaled, y_pred_rescaled_gru)
-print(f"\nGRU MSE: {GRUmse:.2f}, R2: {GRUr2:.2f}")
+print(f"\nGRU MAPE: {GRUmape:.2f}, R2: {GRUr2:.2f}")
 
 
 # --- Build & Train LSTM ---
@@ -85,9 +88,9 @@ history_lstm = LSTMModel.fit(
 y_pred_lstm = LSTMModel.predict(X_test)
 y_pred_rescaled_lstm = scaler.inverse_transform(y_pred_lstm)
 
-LSTMmse = mean_squared_error(y_test_rescaled, y_pred_rescaled_lstm)
+LSTMmape = mean_absolute_percentage_error(y_test_rescaled, y_pred_rescaled_lstm)
 LSTMr2  = r2_score(y_test_rescaled, y_pred_rescaled_lstm)
-print(f"\nLSTM MSE: {LSTMmse:.2f}, R2: {LSTMr2:.2f}")
+print(f"\nLSTM MAPE: {LSTMmape:.2f}, R2: {LSTMr2:.2f}")
 
 
 # --- 1) Combined Train & Validation Loss (GRU vs LSTM) ---
@@ -99,7 +102,7 @@ plt.plot(history_lstm.history['val_loss'], '--', label='LSTM Val Loss')
 plt.title('Train & Validation Loss: GRU vs LSTM')
 plt.xlabel('Epochs'); plt.ylabel('Loss')
 plt.legend(); plt.grid(True)
-plt.savefig("loss_comparison_Feature.png")
+plt.savefig(os.path.join(assets_path, "loss_comparison_gru_lstm_Feature.png"))
 plt.close()
 
 
@@ -111,5 +114,5 @@ plt.plot(y_pred_rescaled_lstm[:100],            '-.', label='LSTM Predicted')
 plt.title('First 100 Days: Actual vs GRU & LSTM Predictions')
 plt.xlabel('Time Steps'); plt.ylabel('Stock Price')
 plt.legend(); plt.grid(True)
-plt.savefig("predictions_comparison_Feature.png")
+plt.savefig(os.path.join(assets_path, "predictions_vs_actual_gru_lstm_Features.png"))
 plt.close()
