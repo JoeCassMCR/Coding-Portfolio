@@ -4,16 +4,18 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_absolute_percentage_error, r2_score
 from sklearn.decomposition import PCA
 from tensorflow.keras import Input
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import GRU, LSTM, Dropout, Dense,Bidirectional
 from tensorflow.keras.callbacks import EarlyStopping
 from typing import Union
+import os
 
-
-
+base_directory = os.path.abspath(".")  
+assets_path = os.path.join(base_directory, "Assets")
+os.makedirs(assets_path, exist_ok=True)
 def ensure_series(x: Union[pd.Series, pd.DataFrame]) -> pd.Series:
     if isinstance(x, pd.DataFrame):
         return x.iloc[:, 0]
@@ -146,7 +148,7 @@ plt.xlabel('Epochs')
 plt.ylabel('Loss (MSE)')
 plt.legend()
 plt.grid(True)
-plt.savefig("loss_comparison_gru_lstm_Features.png")
+plt.savefig(os.path.join(assets_path, "loss_comparison_gru_lstm_Features.png"))
 plt.close()
 
 # 10) Combined Predictions vs Actual (first 100 days)
@@ -159,11 +161,11 @@ plt.xlabel('Time Step')
 plt.ylabel('Price (USD)')
 plt.legend()
 plt.grid(True)
-plt.savefig("predictions_vs_actual_gru_lstm_Features.png")
+plt.savefig(os.path.join(assets_path, "predictions_vs_actual_gru_lstm_Features.png"))
 plt.close()
 
 # 11) Metrics
 for name, pred in [("GRU", y_gru), ("LSTM", y_lstm)]:
-    mse = mean_squared_error(y_actual, pred)
+    mape = mean_absolute_percentage_error(y_actual, pred)
     r2  = r2_score(y_actual, pred)
-    print(f"{name} → MSE: {mse:.4f},  R²: {r2:.4f}")
+    print(f"{name} → MAPE: {mape:.4f},  R²: {r2:.4f}")
