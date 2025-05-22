@@ -66,7 +66,6 @@ y_test_rescaled      = scaler.inverse_transform(y_test.reshape(-1,1))
 
 GRUmape = mean_absolute_percentage_error(y_test_rescaled, y_pred_rescaled_gru)
 GRUr2  = r2_score(y_test_rescaled, y_pred_rescaled_gru)
-print(f"\nGRU MAPE: {GRUmape:.2f}, R2: {GRUr2:.2f}")
 
 
 # --- Build & Train LSTM ---
@@ -91,6 +90,7 @@ y_pred_rescaled_lstm = scaler.inverse_transform(y_pred_lstm)
 LSTMmape = mean_absolute_percentage_error(y_test_rescaled, y_pred_rescaled_lstm)
 LSTMr2  = r2_score(y_test_rescaled, y_pred_rescaled_lstm)
 print(f"\nLSTM MAPE: {LSTMmape:.2f}, R2: {LSTMr2:.2f}")
+print(f"\nGRU MAPE: {GRUmape:.2f}, R2: {GRUr2:.2f}")
 
 
 # --- 1) Combined Train & Validation Loss (GRU vs LSTM) ---
@@ -102,7 +102,7 @@ plt.plot(history_lstm.history['val_loss'], '--', label='LSTM Val Loss')
 plt.title('Train & Validation Loss: GRU vs LSTM')
 plt.xlabel('Epochs'); plt.ylabel('Loss')
 plt.legend(); plt.grid(True)
-plt.savefig(os.path.join(assets_path, "loss_comparison_gru_lstm_Feature.png"))
+plt.savefig(os.path.join(assets_path, "loss_comparison_gru_lstm_Single_Feature.png"))
 plt.close()
 
 
@@ -114,5 +114,5 @@ plt.plot(y_pred_rescaled_lstm[:100],            '-.', label='LSTM Predicted')
 plt.title('First 100 Days: Actual vs GRU & LSTM Predictions')
 plt.xlabel('Time Steps'); plt.ylabel('Stock Price')
 plt.legend(); plt.grid(True)
-plt.savefig(os.path.join(assets_path, "predictions_vs_actual_gru_lstm_Features.png"))
+plt.savefig(os.path.join(assets_path, "predictions_vs_actual_gru_lstm_Single_Feature.png"))
 plt.close()
