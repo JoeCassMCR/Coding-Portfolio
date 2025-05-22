@@ -1,13 +1,17 @@
 import yfinance as yf
+import seaborn as sns
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.decomposition import PCA
 from tensorflow.keras import Input
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import GRU, LSTM, Dropout, Dense
+from tensorflow.keras.layers import GRU, LSTM, Dropout, Dense,Bidirectional
+from tensorflow.keras.callbacks import EarlyStopping
 from typing import Union
+
 
 
 def ensure_series(x: Union[pd.Series, pd.DataFrame]) -> pd.Series:
@@ -73,7 +77,14 @@ sc_features = MinMaxScaler()
 
 scaled_close = sc_close.fit_transform(data[['Close']])
 scaled_other = sc_features.fit_transform(data[features[1:]])
-scaled_data  = np.hstack([scaled_close, scaled_other])
+# Apply PCA
+pca = PCA(n_components=0.95)  # Retain 95% variance
+reduced = pca.fit_transform(scaled_other)
+print(f"PCA reduced features from {scaled_other.shape[1]} to {reduced.shape[1]} dimensions.")
+
+# Use reduced PCA features + scaled_close
+scaled_data  = np.hstack([scaled_close, reduced])  # shape: (n_samples, 1 + n_pca_components)
+
 
 # 5) Supervised dataset
 def create_dataset(arr: np.ndarray, time_step: int = 7):
@@ -92,9 +103,9 @@ y_tr, y_te = y[:split], y[split:]
 def make_model(layer):
     m = Sequential([
         Input(shape=(X_tr.shape[1], X_tr.shape[2])),
-        layer(128, return_sequences=True),
+        Bidirectional(layer(128, return_sequences=True)),
         Dropout(0.2),
-        layer(64),
+        Bidirectional(layer(64)),
         Dropout(0.2),
         Dense(1)
     ])
@@ -105,11 +116,15 @@ gru_model  = make_model(GRU)
 lstm_model = make_model(LSTM)
 
 # 7) Train
-epochs, batch = 15, 16
+epochs, batch = 100, 16
+early_stop = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+
 h_gru  = gru_model.fit(X_tr, y_tr, validation_data=(X_te,y_te),
-                       epochs=epochs, batch_size=batch, verbose=2)
+                       epochs=epochs, batch_size=batch, verbose=2,
+                       callbacks=[early_stop])
 h_lstm = lstm_model.fit(X_tr, y_tr, validation_data=(X_te,y_te),
-                        epochs=epochs, batch_size=batch, verbose=2)
+                        epochs=epochs, batch_size=batch, verbose=2,
+                        callbacks=[early_stop])
 
 # 8) Predict & rescale
 def predict_rescale(m):
@@ -120,13 +135,7 @@ y_gru   = predict_rescale(gru_model)
 y_lstm  = predict_rescale(lstm_model)
 y_actual= sc_close.inverse_transform(y_te.reshape(-1,1))
 
-# 9) Metrics
-for name, pred in [("GRU", y_gru), ("LSTM", y_lstm)]:
-    mse = mean_squared_error(y_actual, pred)
-    r2  = r2_score(y_actual, pred)
-    print(f"{name} → MSE: {mse:.4f},  R²: {r2:.4f}")
-
-# 10) Combined Train & Val Loss for GRU vs LSTM
+# 9) Combined Train & Val Loss for GRU vs LSTM
 plt.figure(figsize=(12, 6))
 plt.plot(h_gru.history['loss'],     linestyle='-',  label='GRU Train Loss')
 plt.plot(h_gru.history['val_loss'], linestyle='--', label='GRU Val Loss')
@@ -140,7 +149,7 @@ plt.grid(True)
 plt.savefig("loss_comparison_gru_lstm_Features.png")
 plt.close()
 
-# 11) Combined Predictions vs Actual (first 100 days)
+# 10) Combined Predictions vs Actual (first 100 days)
 plt.figure(figsize=(12, 6))
 plt.plot(y_actual[:100],    linestyle='-',  label='Actual')
 plt.plot(y_gru[:100],       linestyle='--', label='GRU Predicted')
@@ -152,3 +161,9 @@ plt.legend()
 plt.grid(True)
 plt.savefig("predictions_vs_actual_gru_lstm_Features.png")
 plt.close()
+
+# 11) Metrics
+for name, pred in [("GRU", y_gru), ("LSTM", y_lstm)]:
+    mse = mean_squared_error(y_actual, pred)
+    r2  = r2_score(y_actual, pred)
+    print(f"{name} → MSE: {mse:.4f},  R²: {r2:.4f}")
