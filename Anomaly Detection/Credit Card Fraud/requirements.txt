@@ -1,0 +1,10 @@
+pandas>=2.2.3
+numpy>=1.26.4
+scikit-learn>=1.6.1
+xgboost>=3.0.2
+imbalanced-learn>=0.13
+joblib>=1.5
+fastapi>=0.115.12
+uvicorn>=0.34.3
+pandera>=0.24.0
+pytest>=7.0
